@@ -1,0 +1,82 @@
+﻿@inherits LayoutComponentBase
+<div class="page">
+    
+    <main>
+        <div class="top-row px-4" style="background-color:#78B24B; display:flex; flex-direction: row; justify-content: space-around">
+            <img src="Logo.png" style=" height: 100%" />
+            <form style="width: 80%; color:gray">
+                <input class="form-control" style="width: 100%" placeholder=" Введите для поиска" />
+            </form>
+        </div>
+
+        <article class="content px-4">
+            <h3>Сотрудники</h3>
+            <div style="display:flex; flex-direction:row; flex-wrap:wrap">
+                @foreach (var item in employees!)
+                {
+                    <div class="card" style="width: 10rem; height: 10rem; background-color: #78B24B; color:white">
+                        <div class="card-body">
+                            <h6 class="card-title">@item.Surname @item.FirstName @item.SecondName</h6>
+                            <p class="card-text">@item.Position</p>
+                            <p class="card-text">@item.Email</p>
+                            <p class="card-text">@item.PhoneWork</p>
+                        </div>
+                    </div>
+                }
+            </div>
+            
+        </article>
+    </main>
+</div>
+
+
+
+
+@code {
+    private List<Employee>? employees = new();
+    private HttpClient httpClient = new HttpClient();
+
+    protected override async Task OnInitializedAsync()
+    {
+        employees = await httpClient.GetFromJsonAsync<List<Employee>>("http://localhost:5107/Employees");
+        var t = 9;
+    }
+
+
+
+    public class Employee
+    {
+
+        public int IdEmployee { get; set; }
+
+        public string Surname { get; set; } = null!;
+
+        public string FirstName { get; set; } = null!;
+
+        public string? SecondName { get; set; }
+
+        public string Position { get; set; } = null!;
+
+        public string PhoneWork { get; set; } = null!;
+
+        public string? Phone { get; set; }
+
+        public string Cabinet { get; set; } = null!;
+
+        public string Email { get; set; } = null!;
+
+        public int IdDepartment { get; set; }
+
+        public int? IdHelper { get; set; }
+
+        public string? Other { get; set; }
+
+        public DateOnly? BirthDay { get; set; }
+
+        public int? IdBoss { get; set; }
+
+        public DateTime? IsFired { get; set; }
+
+    }
+
+}
