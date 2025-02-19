@@ -1,17 +1,20 @@
 ﻿@inherits LayoutComponentBase
 
+<div class="page">
+
     <main>
-        <div class="row flex-row flex-nowrap">
-        <div class="col-3">
-            <div class="card card-block">Card</div>
+        <div class="top-row px-4" style="background-color:#78B24B; display:flex; flex-direction: row; justify-content: space-around">
+            <img src="Logo.png" style=" height: 100%" />
+            <form style="width: 80%; color:gray">
+                <input class="form-control" style="width: 100%" placeholder=" Введите для поиска" />
+            </form>
         </div>
 
         <article class="content px-4">
             @Body
         </article>
-        </div>
     </main>
-
+</div>
 
 
 
