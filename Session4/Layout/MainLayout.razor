@@ -1,4 +1,13 @@
-﻿@inherits LayoutComponentBase
+﻿@using Net.Codecrete.QrCodeGenerator
+@using Session4
+@using Blazored.Modal
+@using Blazored.Modal.Services
+@* @using Microsoft.AspNetCore
+@using System.Drawing
+@using QRCoder
+@using System.Drawing.Imaging *@
+
+@inherits LayoutComponentBase
 
 <div class="page">
 
@@ -11,11 +20,170 @@
         </div>
 
         <article class="content px-4">
-            @Body
+            <h3>Сотрудники</h3>
+            <div class="overflow-auto" style="display:flex; justify-content:center; flex-direction:row; width:100rem">
+                @foreach (Employee item in employees!)
+                {
+                    <div class="card" style="min-width:10rem; max-height:8rem; background-color:#78B24B; margin: 5px; display:flex; justify-content:space-between">
+                        <div class="card-body">
+                            <h6 class="card-title" style="font-size:10px; color:white; margin: 1px">@item.Surname @item.FirstName @item.SecondName</h6>
+                            <p class="card-text" style="font-size:8px; color:white; margin: 1px">@item.Position</p>
+                            <p class="card-text" style="font-size:8px; color:white; margin: 1px">@item.Email</p>
+                            <p class="card-text" style="font-size:8px; color:white; margin: 1px">@item.PhoneWork</p>
+                            <div style="display:flex; justify-content:space-between; flex-direction:row;">
+                                <p class="card-text" style="font-size:8px; color:white; margin: 1px">@item.BirthDay</p>
+
+                                <button @onclick="ShowModal" style="height:15px; width:15px; display:flex; justify-content:center; align-items:center">
+                                    <img src="qricon.png" style="width:14px"/>
+                                </button>
+
+                                <modal IsOpen=ShouldShowModal>
+                                    <h3>This is a modal</h3>
+                                    <button @onclick="CloseModal">Close Modal</button>
+                                </modal>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div style="display:flex; justify-content:space-between; flex-direction:row; width:100rem; margin-top:3rem">
+                <div>
+                    <div>
+                        <h3>Календарь</h3>
+                        <div style="width:18rem; height:16rem; background-color:lightgray"></div>
+                    </div>
+                    <div style="margin-top:3rem">
+                        <h3>События</h3>
+                        @foreach (var item in events!)
+                        {
+                            <div class="card" style="min-width:15rem; max-height:7rem; background-color:#78B24B; margin: 5px">
+                                <div class="card-body">
+                                    <h6 class="card-title" style="font-size:10px; color:white">@item.EventName</h6>
+                                    <p class="card-text" style="font-size:8px; color:white">@item.EventDescription</p>
+                                    <div style="display:flex; justify-content:space-between; flex-direction:row;">
+                                        <p class="card-text" style="font-size:8px; color:white">@item.DateOfEvent</p>
+                                        <p class="card-text" style="font-size:8px; color:white">@item.EventManagers</p>
+                                    </div>
+
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+                <div>
+                    <h3>Новости</h3>
+                </div>
+            </div>
         </article>
+
     </main>
 </div>
 
 
+@code {
+
+    private List<Employee>? employees = new();
+    private List<Event>? events = new();
+    private HttpClient httpClient = new HttpClient();
+
+    public bool ShouldShowModal { get; set; } = false;
+
+    public void ShowModal()
+    {
+        ShouldShowModal = true;
+    }
+    public void CloseModal()
+    {
+        ShouldShowModal = false;
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        employees = await httpClient.GetFromJsonAsync<List<Employee>>("http://localhost:5142/Employees");
+        events = await httpClient.GetFromJsonAsync<List<Event>>("http://localhost:5142/Events");
+
+    }
+
+    public class Employee
+    {
+
+        public int IdEmployee { get; set; }
+
+        public string Surname { get; set; } = null!;
+
+        public string FirstName { get; set; } = null!;
+
+        public string? SecondName { get; set; }
+
+        public string Position { get; set; } = null!;
+
+        public string PhoneWork { get; set; } = null!;
+
+        public string? Phone { get; set; }
+
+        public string Cabinet { get; set; } = null!;
+
+        public string Email { get; set; } = null!;
+
+        public int IdDepartment { get; set; }
+
+        public int? IdHelper { get; set; }
+
+        public string? Other { get; set; }
+
+        public DateOnly? BirthDay { get; set; }
+
+        public int? IdBoss { get; set; }
+
+        public DateTime? IsFired { get; set; }
+
+       
+        public void ViewCode(MouseEventArgs e)
+        {
+            var qr = QrCode.EncodeText("Hello, world", QrCode.Ecc.Medium);
+            
+            var t = 1;
+        }
+
+        // public void GenerateQRCode(string QRCodeText, string QRByte)
+        // {
+        //     if (!string.IsNullOrEmpty(QRCodeText))
+        //     {
+        //         using MemoryStream ms = new();
+        //         QRCodeGenerator qrCodeGenerate = new();
+        //         QRCodeData qrCodeData = qrCodeGenerate.CreateQrCode(QRCodeText, QRCodeGenerator.ECCLevel.Q);
+        //         QRCode qrCode = new(qrCodeData);
+        //         using Bitmap qrBitMap = qrCode.GetGraphic(20);
+        //         qrBitMap.Save(ms, ImageFormat.Png);
+        //         string base64 = Convert.ToBase64String(ms.ToArray());
+        //         QRByte = string.Format("data:image/png;base64,{0}", base64);
+        //     }
+        // }
+
+
+    }
+
+    public class Event
+    {
+        public int IdEvent { get; set; }
+
+        public string EventName { get; set; } = null!;
+
+        public string TypeOfEvent { get; set; } = null!;
+
+        public string EventStatus { get; set; } = null!;
+
+        public string EventDescription { get; set; } = null!;
+
+        public DateTime DateOfEvent { get; set; }
+
+        public string EventManagers { get; set; } = null!;
+
+        public string TypeOfClass { get; set; } = null!;
+
+    }
+
+
+}
 
 
