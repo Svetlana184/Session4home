@@ -1,9 +1,7 @@
 ﻿@page "/qr/{Id:int}"
-@using IronQr;
-@using IronSoftware.Drawing;
 @using Microsoft.AspNetCore
 @using QRCoder
-@using System.Drawing
+@using Session4.Model
 
 <h3>Qr</h3>
 
@@ -12,28 +10,21 @@
 @code {
     [Parameter]
     public int? Id { get; set; }
-
-
-
     public string? QRCodeText { get; set; }
     public string QRByte = "";
     private static List<Employee>? employees = new();
     private HttpClient httpClient = new HttpClient();
-    // private Employee? employee = employees!.FirstOrDefault(p => p.IdEmployee == Id);
-    // public int t { get; set; }
-
 
     protected override async Task OnInitializedAsync()
     {
-        employees = await httpClient.GetFromJsonAsync<List<Employee>>("http://localhost:5142/Employees");
+        employees = await httpClient.GetFromJsonAsync<List<Employee>>("http://localhost:5107/Employees");
         GenerateQRCode();
     }
 
     public void GenerateQRCode()
     {
         Employee employee = employees!.FirstOrDefault(p => p.IdEmployee == Id)!;
-        Vcard vcard = new Vcard(employee);
-        QRCodeText = vcard.ToString();
+        QRCodeText = employee.ToString();
         if (!string.IsNullOrEmpty(QRCodeText))
         {
             using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
@@ -51,71 +42,6 @@
 
 
 
-    public class Employee
-    {
-
-        public int IdEmployee { get; set; }
-
-        public string Surname { get; set; } = null!;
-
-        public string FirstName { get; set; } = null!;
-
-        public string? SecondName { get; set; }
-
-        public string Position { get; set; } = null!;
-
-        public string PhoneWork { get; set; } = null!;
-
-        public string? Phone { get; set; }
-
-        public string Cabinet { get; set; } = null!;
-
-        public string Email { get; set; } = null!;
-
-        public int IdDepartment { get; set; }
-
-        public int? IdHelper { get; set; }
-
-        public string? Other { get; set; }
-
-        public DateOnly? BirthDay { get; set; }
-
-        public int? IdBoss { get; set; }
-
-        public DateTime? IsFired { get; set; }
-    }
-
-
-    public class Vcard{
-        public string? BEGIN = "VCARD";
-        private string? N { get; set; }
-        private string? FN { get; set; }
-        private string? ORG { get; set; }
-        private string? TITLE { get; set; }
-        private string? TEL_WORK_VOICE { get; set; }
-        private string? TELL_CELL { get; set; }
-        private string? EMAIL_WORK_INTERNET { get; set; }
-        public string? END = "VCARD";
-
-        public Vcard(Employee emp)
-        {
-            N = emp.FirstName;
-            FN = emp.Surname;
-            ORG = emp.IdDepartment.ToString();
-            TITLE = emp.Position;
-            TEL_WORK_VOICE = emp.PhoneWork;
-            TELL_CELL = emp.Phone;
-            EMAIL_WORK_INTERNET = emp.Email;
-        }
-
-        public override string ToString()
-        {
-            return "BEGIN: VCARD\n " + "N: " + N + "\n" + "FN: " + FN + "\n" + "ORG: " +
-            ORG + "\n" + "TITLE: " + TITLE + "\n" + "TEL;WORK;VOICE: " + TEL_WORK_VOICE + "\n" + "TELL;CELL: " + TELL_CELL + "\n" +
-            "EMAIL;WORK;INTERNET: " + EMAIL_WORK_INTERNET + "\n" + "END: VCARD";
-        }
-
-    }
 }
 
 
