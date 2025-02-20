@@ -32,7 +32,8 @@
     public void GenerateQRCode()
     {
         Employee employee = employees!.FirstOrDefault(p => p.IdEmployee == Id)!;
-        QRCodeText = employee.Surname;
+        Vcard vcard = new Vcard(employee);
+        QRCodeText = vcard.ToString();
         if (!string.IsNullOrEmpty(QRCodeText))
         {
             using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
@@ -82,6 +83,38 @@
         public int? IdBoss { get; set; }
 
         public DateTime? IsFired { get; set; }
+    }
+
+
+    public class Vcard{
+        public string? BEGIN = "VCARD";
+        private string? N { get; set; }
+        private string? FN { get; set; }
+        private string? ORG { get; set; }
+        private string? TITLE { get; set; }
+        private string? TEL_WORK_VOICE { get; set; }
+        private string? TELL_CELL { get; set; }
+        private string? EMAIL_WORK_INTERNET { get; set; }
+        public string? END = "VCARD";
+
+        public Vcard(Employee emp)
+        {
+            N = emp.FirstName;
+            FN = emp.Surname;
+            ORG = emp.IdDepartment.ToString();
+            TITLE = emp.Position;
+            TEL_WORK_VOICE = emp.PhoneWork;
+            TELL_CELL = emp.Phone;
+            EMAIL_WORK_INTERNET = emp.Email;
+        }
+
+        public override string ToString()
+        {
+            return "BEGIN: VCARD\n " + "N: " + N + "\n" + "FN: " + FN + "\n" + "ORG: " +
+            ORG + "\n" + "TITLE: " + TITLE + "\n" + "TEL;WORK;VOICE: " + TEL_WORK_VOICE + "\n" + "TELL;CELL: " + TELL_CELL + "\n" +
+            "EMAIL;WORK;INTERNET: " + EMAIL_WORK_INTERNET + "\n" + "END: VCARD";
+        }
+
     }
 }
 
