@@ -20,7 +20,7 @@
 
         public string Email { get; set; } = null!;
 
-        public int IdDepartment { get; set; }
+        public string Department { get; set; } = null!;
 
         public int? IdHelper { get; set; }
 
@@ -31,6 +31,7 @@
         public int? IdBoss { get; set; }
 
         public DateTime? IsFired { get; set; }
+        public string Company { get; set; } = null!;
 
         public override string ToString()
         {
