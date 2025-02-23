@@ -8,6 +8,7 @@
 @using System.Text.Json
 
 
+
 <h3>Сотрудники</h3>
 <div class="overflow-auto" style="display:flex; justify-content:center; flex-direction:row; width:100rem">
     @foreach (Employee item in employees!)
@@ -36,11 +37,9 @@
         <div>
             <h3>Календарь</h3>
 
-            <div class="control-wrapper" >
-                <SfCalendar TValue="DateTime?" @bind-Value="@SelectedDate">
-                    <CalendarEvents TValue="DateTime?" OnRenderDayCell="CustomDates" ValueChange="OnChange"></CalendarEvents>
-                </SfCalendar>
-            </div>
+            
+                <div class="container"><input class="form-control" id="datepicker" type="text" /></div>
+           
         </div>
         <div style="margin-top:3rem">
             <h3>События</h3>
@@ -74,8 +73,16 @@
         <h3>Новости</h3>
     </div>
 </div>
+<script>
+    var ranged = new Datepicker('#datepicker', {
+        inline: true,
+        ranged: false,
+        time: false
+    });
+</script>
 
 @code {
+
 
     private List<Employee>? employees = new();
     private List<Event>? events = new();
