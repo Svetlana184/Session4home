@@ -1,4 +1,7 @@
-﻿namespace Session4.Model
+﻿using static QRCoder.PayloadGenerator;
+using Syncfusion.Blazor.Popups;
+
+namespace Session4.Model
 {
     public class Event
     {
@@ -14,8 +17,19 @@
 
         public DateTime DateOfEvent { get; set; }
 
-        public Employee EventManagers { get; set; } = null!;
+        public int EventManagers { get; set; }
 
         public string TypeOfClass { get; set; } = null!;
+
+
+        public override string ToString()
+        {
+            return "BEGIN:VCALENDAR\n" + "VERSION:2.0\n" + "BEGIN:VEVENT\n" + "SUMMARY: " + EventName + 
+            "\n" + "DTSTART: " + DateOfEvent + "\n" + "DTEND:" + "" + "DTSTAMP:" + "" +
+            "\n" + "UID: " + IdEvent + "\n" + "DESCRIPTION: " + EventDescription + 
+            "\n" + "LOCATION: " + "" + "\n" + "ORGANIZER: " + "" + "\n" +
+            "STATUS: " + "CONFIRMED" + "\n" + "PRIORITY: " + "0" + "\n" + 
+            "END: " + "VEVENT" + "\n" + "END: VCALENDAR";
+        }
     }
 }

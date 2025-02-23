@@ -2,21 +2,25 @@
 @using Session4.Model
 @using Syncfusion.Blazor
 @using Syncfusion.Blazor.Calendars
+@using Microsoft.AspNetCore.Components.Web
+@using System.IO
+@inject IJSRuntime JS
+@using System.Text.Json
 
 
 <h3>Сотрудники</h3>
 <div class="overflow-auto" style="display:flex; justify-content:center; flex-direction:row; width:100rem">
     @foreach (Employee item in employees!)
     {
-        <div class="card" style="min-width:10rem; max-height:8rem; background-color:#78B24B; margin: 5px; display:flex; justify-content:space-between">
+        <div class="card" style="min-width:10rem; max-height:8rem; background-color:#78B24B; display:flex; justify-content:space-between">
             <div class="card-body">
-                <h6 class="card-title" style="font-size:10px; color:white; margin: 1px">@item.Surname @item.FirstName @item.SecondName</h6>
+                <h6 class="card-title" style="font-size:12px; color:white; margin: 1px">@item.Surname @item.FirstName @item.SecondName</h6>
                 <p class="card-text" style="font-size:8px; color:white; margin: 1px">@item.Position</p>
                 <p class="card-text" style="font-size:8px; color:white; margin: 1px">@item.Email</p>
                 <p class="card-text" style="font-size:8px; color:white; margin: 1px">@item.PhoneWork</p>
                 <div style="display:flex; justify-content:space-between; flex-direction:row;">
                     <p class="card-text" style="font-size:8px; color:white; margin: 1px">@Convert.ToDateTime(item.BirthDay.ToString())!.ToString("M")</p>
-                    <a class="btn btn-primary" href="/qr/@item.IdEmployee" style="height:15px; width:15px;
+                    <a class="btn btn-primary" href="/qr/@item.IdEmployee" style="height:15px; width:4px;
                                     display:flex; justify-content:center; align-items:center">
                         <img src="qricon.png" style="width:15px" />
                     </a>
@@ -42,13 +46,23 @@
             <h3>События</h3>
             @foreach (var item in events!)
             {
-                <div class="card" style="min-width:15rem; max-height:7rem; background-color:#78B24B; margin: 5px">
+                <div class="card" style="min-width:15rem; max-height:6rem; background-color:#78B24B; margin: 5px">
                     <div class="card-body">
-                        <h6 class="card-title" style="font-size:10px; color:white">@item.EventName</h6>
+                        <h6 class="card-title" style="font-size:12px; color:white">@item.EventName</h6>
                         <p class="card-text" style="font-size:8px; color:white">@item.EventDescription</p>
                         <div style="display:flex; justify-content:space-between; flex-direction:row;">
-                            <p class="card-text" style="font-size:8px; color:white">@item.DateOfEvent</p>
-                            <p class="card-text" style="font-size:8px; color:white">@item.EventManagers.Surname</p>
+                            <div style="display:flex; flex-direction:row; align-items:center">
+                                <a class="btn btn-primary" href="/event/@item.IdEvent" style="height:15px; width:4px;
+                                    display:flex; justify-content:center; align-items:center">
+                                    <img src="calendar.png" style="width: 15px; margin:2px" />
+                                </a>
+
+                                <p class="card-text" style="font-size:8px; color:white">@item.DateOfEvent</p>
+                            </div>
+
+                            <p class="card-text" style="font-size:8px; color:white">@employees.FirstOrDefault(p => p.IdEmployee == item.EventManagers)!.Surname
+                                @employees.FirstOrDefault(p => p.IdEmployee == item.EventManagers)!.FirstName.Substring(0, 1). @employees.FirstOrDefault(p => p.IdEmployee == item.EventManagers)!.SecondName!.Substring(0, 1).
+                            </p>
                         </div>
 
                     </div>
@@ -67,13 +81,16 @@
     private List<Event>? events = new();
     private HttpClient httpClient = new HttpClient();
 
-
+    
     protected override async Task OnInitializedAsync()
     {
         employees = await httpClient.GetFromJsonAsync<List<Employee>>("http://localhost:5107/Employees");
         events = await httpClient.GetFromJsonAsync<List<Event>>("http://localhost:5107/Events");
+      
 
     }
+
+
 
     public DateTime? SelectedDate { get; set; }
     public string SelectedValue { get; set; } = DateTime.Now.ToString("M/d/yyyy");
@@ -91,37 +108,3 @@
     }
    
 }
-
-<style>
-    #display-date {
-        max-width: 300px;
-        margin: 0 auto;
-        padding: 15px 0;
-        font-size: 13px;
-    }
-
-    .control-wrapper {
-        width: 300px;
-        margin: 0 auto;
-        padding-top: 20px;
-    }
-
-    .e-calendar .e-content .e-cell.personal-appointment span.e-day,
-    .e-calendar .e-content td:hover.e-cell.personal-appointment span.e-day,
-    .e-calendar .e-content td.e-selected.e-focused-date.e-cell.personal-appointment span.e-day {
-        color: #28a745;
-        font-weight: 800;
-    }
-
-    .e-calendar .e-content .e-cell.official-appointment span.e-day,
-    .e-calendar .e-content td:hover.e-cell.official-appointment span.e-day,
-    .e-calendar .e-content td.e-selected.e-focused-date.e-cell.official-appointment span.e-day {
-        color: #dc3545;
-        font-weight: 800;
-    }
-
-    .e-calendar .e-content td.e-selected.e-focused-date.e-cell.personal-appointment span.e-day,
-    .e-calendar .e-content td.e-selected.e-focused-date.e-cell.official-appointment span.e-day {
-        background-color: #b511485e;
-    }
-</style>

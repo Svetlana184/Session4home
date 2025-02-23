@@ -1,0 +1,31 @@
+﻿@page "/event/{Id:int}"
+@using Session4.Model
+
+<h3>Download Event</h3>
+
+<button @onclick="DownloadFile">Download Event</button>
+
+
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+    private List<Event>? events = new();
+    private HttpClient httpClient = new HttpClient();
+    public string? Text { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        events = await httpClient.GetFromJsonAsync<List<Event>>("http://localhost:5107/Events");
+        Text = events.FirstOrDefault(p => p.IdEvent == Id)!.ToString();
+
+    }
+    private async Task DownloadFile()
+    {
+        await JS.InvokeVoidAsync("downloadFile", "event.ics", Text);
+    }
+
+    [Inject]
+    private IJSRuntime JS { get; set; }
+		
+}
