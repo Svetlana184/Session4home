@@ -16,7 +16,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        events = await httpClient.GetFromJsonAsync<List<Event>>("http://localhost:5107/Events");
+        events = await httpClient.GetFromJsonAsync<List<Event>>("http://localhost:5142/Events");
         Text = events.FirstOrDefault(p => p.IdEvent == Id)!.ToString();
 
     }

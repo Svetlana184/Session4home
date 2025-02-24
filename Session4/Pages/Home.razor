@@ -1,78 +1,73 @@
 ﻿@page "/"
 @using Session4.Model
-@using Syncfusion.Blazor
-@using Syncfusion.Blazor.Calendars
 @using Microsoft.AspNetCore.Components.Web
 @using System.IO
 @inject IJSRuntime JS
 @using System.Text.Json
 
-
-
-<h3>Сотрудники</h3>
-<div class="overflow-auto" style="display:flex; justify-content:center; flex-direction:row; width:100rem">
-    @foreach (Employee item in employees!)
-    {
-        <div class="card" style="min-width:10rem; max-height:8rem; background-color:#78B24B; display:flex; justify-content:space-between">
-            <div class="card-body">
-                <h6 class="card-title" style="font-size:12px; color:white; margin: 1px">@item.Surname @item.FirstName @item.SecondName</h6>
-                <p class="card-text" style="font-size:8px; color:white; margin: 1px">@item.Position</p>
-                <p class="card-text" style="font-size:8px; color:white; margin: 1px">@item.Email</p>
-                <p class="card-text" style="font-size:8px; color:white; margin: 1px">@item.PhoneWork</p>
-                <div style="display:flex; justify-content:space-between; flex-direction:row;">
-                    <p class="card-text" style="font-size:8px; color:white; margin: 1px">@Convert.ToDateTime(item.BirthDay.ToString())!.ToString("M")</p>
-                    <a class="btn btn-primary" href="/qr/@item.IdEmployee" style="height:15px; width:4px;
+<div style=" width:100rem; display:flex; flex-direction:column; justify-content:center; align-items:center">
+    <h3 style="display:flex; align-self:flex-start">Сотрудники</h3>
+    <div class="overflow-auto" style="display:flex; justify-content:center; flex-direction:row; width:100rem">
+        @foreach (Employee item in employees!)
+        {
+            <div class="card" style="min-width:10rem; max-height:8rem; background-color:#78B24B">
+                <div class="card-body">
+                    <h6 class="card-title" style="font-size:12px; color:white; margin: 1px">@item.Surname @item.FirstName @item.SecondName</h6>
+                    <p class="card-text" style="font-size:8px; color:white; margin: 1px">@item.Position</p>
+                    <p class="card-text" style="font-size:8px; color:white; margin: 1px">@item.Email</p>
+                    <p class="card-text" style="font-size:8px; color:white; margin: 1px">@item.PhoneWork</p>
+                    <div style="display:flex; justify-content:space-between; flex-direction:row;">
+                        <p class="card-text" style="font-size:8px; color:white; margin: 1px">@Convert.ToDateTime(item.BirthDay.ToString())!.ToString("M")</p>
+                        <a class="btn btn-primary" href="/qr/@item.IdEmployee" style="height:15px; width:4px;
                                     display:flex; justify-content:center; align-items:center">
-                        <img src="qricon.png" style="width:15px" />
-                    </a>
-
-
-                </div>
-            </div>
-        </div>
-    }
-</div>
-<div style="display:flex; justify-content:space-between; flex-direction:row; width:100rem; margin-top:3rem">
-    <div>
-        <div>
-            <h3>Календарь</h3>
-
-            
-                <div class="container"><input class="form-control" id="datepicker" type="text" /></div>
-           
-        </div>
-        <div style="margin-top:3rem">
-            <h3>События</h3>
-            @foreach (var item in events!)
-            {
-                <div class="card" style="min-width:15rem; max-height:6rem; background-color:#78B24B; margin: 5px">
-                    <div class="card-body">
-                        <h6 class="card-title" style="font-size:12px; color:white">@item.EventName</h6>
-                        <p class="card-text" style="font-size:8px; color:white">@item.EventDescription</p>
-                        <div style="display:flex; justify-content:space-between; flex-direction:row;">
-                            <div style="display:flex; flex-direction:row; align-items:center">
-                                <a class="btn btn-primary" href="/event/@item.IdEvent" style="height:15px; width:4px;
-                                    display:flex; justify-content:center; align-items:center">
-                                    <img src="calendar.png" style="width: 15px; margin:2px" />
-                                </a>
-
-                                <p class="card-text" style="font-size:8px; color:white">@item.DateOfEvent</p>
-                            </div>
-
-                            <p class="card-text" style="font-size:8px; color:white">@employees.FirstOrDefault(p => p.IdEmployee == item.EventManagers)!.Surname
-                                @employees.FirstOrDefault(p => p.IdEmployee == item.EventManagers)!.FirstName.Substring(0, 1). @employees.FirstOrDefault(p => p.IdEmployee == item.EventManagers)!.SecondName!.Substring(0, 1).
-                            </p>
-                        </div>
-
+                            <img src="qricon.png" style="width:15px" />
+                        </a>
                     </div>
                 </div>
-            }
+            </div>
+        }
+    </div>
+    <div style="display:flex; justify-content:space-between; flex-direction:row; width:100rem; margin-top:3rem">
+        <div>
+            <div>
+                <h3>Календарь</h3>
+                <div class="container"><input class="form-control" id="datepicker" type="text" /></div>
+            </div>
+            <div style="margin-top:3rem">
+                <h3>События</h3>
+                @foreach (var item in events!)
+                {
+                    <div class="card" style="min-width:15rem; max-height:6rem; background-color:#78B24B; margin: 5px">
+                        <div class="card-body" style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:space-between">
+                            <h6 class="card-title" style="font-size:12px; color:white">@item.EventName</h6>
+                            <p class="card-text" style="font-size:8px; color:white">@item.EventDescription</p>
+                            <div style="display:flex; justify-content:space-between; flex-direction:row;">
+                                <div style="display:flex; flex-direction:row; align-items:center">
+                                    <a class="btn btn-primary" href="/event/@item.IdEvent" style="height:15px; width:4px;
+                                    display:flex; justify-content:center; align-items:center">
+                                        <img src="calendar.png" style="width: 15px; margin:2px" />
+                                    </a>
+                                    <p class="card-text" style="font-size:8px; color:white">@item.DateOfEvent.ToString("d")</p>
+                                </div>
+
+                                <p class="card-text" style="font-size:8px; color:white">
+                                    @employees.FirstOrDefault(p => p.IdEmployee == item.EventManagers)!.Surname
+                                    @employees.FirstOrDefault(p => p.IdEmployee == item.EventManagers)!.FirstName.Substring(0, 1). @employees.FirstOrDefault(p => p.IdEmployee == item.EventManagers)!.SecondName!.Substring(0, 1).
+                                </p>
+                            </div>
+
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div style="width:70rem">
+            <h3>Новости</h3>
         </div>
     </div>
-    <div>
-        <h3>Новости</h3>
-    </div>
 </div>
+
+
 <script>
     var ranged = new Datepicker('#datepicker', {
         inline: true,
@@ -82,36 +77,14 @@
 </script>
 
 @code {
-
-
     private List<Employee>? employees = new();
     private List<Event>? events = new();
+    private List<WorkingCalendar>? workingDays = new();
     private HttpClient httpClient = new HttpClient();
-
-    
     protected override async Task OnInitializedAsync()
     {
-        employees = await httpClient.GetFromJsonAsync<List<Employee>>("http://localhost:5107/Employees");
-        events = await httpClient.GetFromJsonAsync<List<Event>>("http://localhost:5107/Events");
-      
-
+        employees = await httpClient.GetFromJsonAsync<List<Employee>>("http://localhost:5142/Employees");
+        events = await httpClient.GetFromJsonAsync<List<Event>>("http://localhost:5142/Events");
+        workingDays = await httpClient.GetFromJsonAsync<List<WorkingCalendar>>("http://localhost:5142/WorkingDays");
     }
-
-
-
-    public DateTime? SelectedDate { get; set; }
-    public string SelectedValue { get; set; } = DateTime.Now.ToString("M/d/yyyy");
-    public DateTime? CurrentDate { get; set; } = DateTime.Now;
-    public void CustomDates(RenderDayCellEventArgs args)
-    {
-        var CurrentMonth = CurrentDate.Value.Month;
-       
-    }
-    public void OnChange(ChangedEventArgs<DateTime?> args)
-    {
-        var Count = 0;
-        var CurrentMonth = CurrentDate.Value.Month;
-        
-    }
-   
 }

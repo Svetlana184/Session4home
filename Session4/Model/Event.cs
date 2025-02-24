@@ -1,5 +1,5 @@
 ﻿using static QRCoder.PayloadGenerator;
-using Syncfusion.Blazor.Popups;
+
 
 namespace Session4.Model
 {

@@ -17,7 +17,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        employees = await httpClient.GetFromJsonAsync<List<Employee>>("http://localhost:5107/Employees");
+        employees = await httpClient.GetFromJsonAsync<List<Employee>>("http://localhost:5142/Employees");
         GenerateQRCode();
     }
 
